@@ -21,7 +21,7 @@ TOP_X_SUBS_NP_DATA_FILE := $(DATA_FILE_DIR)step7.top_xsubs_np_$(DATA_FILE_BASE)
 TOP_X_SUBS_P_DATA_FILE := $(DATA_FILE_DIR)step7.top_xsubs_p_$(DATA_FILE_BASE).log
 SUBSET_SUB_DATA_FILE := $(DATA_FILE_DIR)subset_subdomain_$(DATA_FILE_BASE)
 
-NUM_PROCS := 8
+NUM_PROCS := $(shell "nproc 2>/dev/null")
 ifeq ($(NUM_PROCS),)
 NUM_PROCS := 8
 endif
