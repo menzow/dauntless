@@ -21,9 +21,9 @@ TOP_X_SUBS_NP_DATA_FILE := $(DATA_FILE_DIR)step7.top_xsubs_np_$(DATA_FILE_BASE)
 TOP_X_SUBS_P_DATA_FILE := $(DATA_FILE_DIR)step7.top_xsubs_p_$(DATA_FILE_BASE).log
 SUBSET_SUB_DATA_FILE := $(DATA_FILE_DIR)subset_subdomain_$(DATA_FILE_BASE)
 
-NUM_PROCS := $(shell nproc)
+NUM_PROCS := 8
 ifeq ($(NUM_PROCS),)
-NUM_PROCS := 1
+NUM_PROCS := 8
 endif
 
 # Options for Sort
@@ -69,7 +69,7 @@ $(NAME_DATA_FILE): $(DATA_FILE)
 	@echo "Step 1 (jq extraction): Creating $@ from $<"
 	pv -cN input $< | \
 		pigz -dc | \
-		parallel --no-notice --pipe --line-buffer --block 50M jq -r .name | \
+		LC_ALL=C parallel --no-notice --pipe --line-buffer --block 50M cut -d',' -f2 | cut -d':' -f2 | LC_ALL=C sed 's/"//g'|  \
 		pv -cN postparallel | \
 		uniq | \
 		pv -cN postuniq | \
