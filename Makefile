@@ -21,7 +21,7 @@ TOP_X_SUBS_NP_DATA_FILE := $(DATA_FILE_DIR)step7.top_xsubs_np_$(DATA_FILE_BASE)
 TOP_X_SUBS_P_DATA_FILE := $(DATA_FILE_DIR)step7.top_xsubs_p_$(DATA_FILE_BASE).log
 SUBSET_SUB_DATA_FILE := $(DATA_FILE_DIR)subset_subdomain_$(DATA_FILE_BASE)
 
-NUM_PROCS := $(shell "nproc 2>/dev/null")
+NUM_PROCS := $(shell nproc)
 ifeq ($(NUM_PROCS),)
 NUM_PROCS := 8
 endif
@@ -69,7 +69,7 @@ $(NAME_DATA_FILE): $(DATA_FILE)
 	@echo "Step 1 (jq extraction): Creating $@ from $<"
 	pv -cN input $< | \
 		pigz -dc | \
-		LC_ALL=C parallel --no-notice --pipe --line-buffer --block 50M cut -d',' -f2 | cut -d':' -f2 | LC_ALL=C sed 's/"//g'|  \
+		LC_ALL=C parallel --no-notice --pipe --line-buffer --block 50M bash -c "cat /dev/stdin| cut -d',' -f2 | cut -d':' -f2 | LC_ALL=C sed 's/\"//g'" |  \
 		pv -cN postparallel | \
 		uniq | \
 		pv -cN postuniq | \
